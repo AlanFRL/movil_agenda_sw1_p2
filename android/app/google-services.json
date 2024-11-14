@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "343108349304",
+    "project_id": "movil-agenda-sw1-p2",
+    "storage_bucket": "movil-agenda-sw1-p2.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:343108349304:android:43ce0fbf1722851828ac8d",
+        "android_client_info": {
+          "package_name": "com.example.movil_agenda_sw1_p2"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDTVjwWJPI5Q1wukOpADBFZ0NVNZLL2A90"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
