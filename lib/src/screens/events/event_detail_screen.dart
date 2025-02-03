@@ -46,7 +46,7 @@ class EventDetailScreen extends StatelessWidget {
     EventsProvider eventsProvider = EventsProvider();
     final eventDetail = await eventsProvider.getEventDetail(eventId);
     //Future.microtask(() => eventsProvider.registerEventView(eventId));
-    Future.microtask(() => eventsProvider.registerEventView(eventId, "agenda.apoderado"));
+    Future.microtask(() => eventsProvider.registerEventView(eventId));
     return eventDetail;
   }
 }

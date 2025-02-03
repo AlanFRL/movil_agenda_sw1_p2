@@ -81,4 +81,53 @@ class AvisosProvider extends GetConnect {
     }
     return false;
   }
+
+  // Nueva función para registrar la visualización del aviso
+  Future<void> registerAvisoView(int avisoId, String userClass) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('token');
+    //int? userId = prefs.getInt('user_id');
+    int? userId = int.tryParse(prefs.getString('user_id') ?? '');
+    String? userName = prefs.getString('user_name');
+    //String? userClass = prefs.getString('model_name');
+
+    print("Intentando registrar visualización del aviso $avisoId");
+    print("token: $token");
+    print("userId: $userId");
+    print("userName: $userName");
+    print("userClass: $userClass");
+
+    if (token == null || userId == null || userName == null) {
+      print(
+          "Información del usuario faltante para registrar la visualización.");
+      return;
+    }
+
+    final payload = {
+      'user_id': userId,
+      'user_name': userName,
+      'user_class': userClass,
+      'aviso_id': avisoId,
+    };
+
+    try {
+      Response response = await post(
+        '$url/api/aviso/register_view',
+        payload,
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        print("Registro de visualización de aviso exitoso.");
+      } else {
+        print(
+            "Fallo en el registro de visualización de aviso: ${response.statusCode}");
+      }
+    } catch (e) {
+      print("Error al registrar visualización del aviso: $e");
+    }
+  }
 }

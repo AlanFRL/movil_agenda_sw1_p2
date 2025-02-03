@@ -6,8 +6,16 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:movil_agenda_sw1_p2/src/config/environment/environment.dart';
 import 'package:movil_agenda_sw1_p2/src/helpers/auth_helper.dart'; // Importa AuthHelper
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'firebase_options.dart';
 
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  print("Handling a background message: ${message.messageId}");
+}
+
+final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+    FlutterLocalNotificationsPlugin();
 
 void main() async {
   WidgetsFlutterBinding
@@ -17,6 +25,84 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   ); // Inicializar Firebase antes de ejecutar la app
+  
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+
+  FirebaseMessaging messaging = FirebaseMessaging.instance;
+
+  // Obtener el token FCM
+  String? token = await messaging.getToken();
+  print("FCM Token: $token");
+
+  // Registrar el token en Odoo solo si el usuario ya está autenticado
+  /*
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  String? userId = prefs.getString('user_id');
+  if (token != null && userId != null) {
+    await AuthHelper.registerFcmToken(token);
+  }
+  */
+
+  FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+    print('Message clicked!');
+    print('Notification Data: ${message.data}'); // Imprimir datos de la notificación
+
+    // Redirige siempre al login
+    Get.offAllNamed('/');
+  });
+
+
+  // Inicializar notificaciones locales
+  const AndroidInitializationSettings initializationSettingsAndroid =
+      AndroidInitializationSettings('@mipmap/ic_launcher'); // Icono de la app
+
+  final InitializationSettings initializationSettings = InitializationSettings(
+    android: initializationSettingsAndroid,
+  );
+
+  await flutterLocalNotificationsPlugin.initialize(
+    initializationSettings,
+  );
+
+  // Crear y registrar un canal de notificaciones
+  const AndroidNotificationChannel channel = AndroidNotificationChannel(
+    'default_channel', // ID del canal
+    'Notificaciones Generales', // Nombre del canal
+    description: 'Canal para notificaciones generales de la app', // Descripción del canal
+    importance: Importance.high, // Importancia alta para notificaciones visibles
+    playSound: true, // Habilitar el sonido por defecto
+  );
+
+  await flutterLocalNotificationsPlugin
+      .resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin>()
+      ?.createNotificationChannel(channel);
+
+  FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    print('Received message in foreground: ${message.notification?.title}');
+
+    RemoteNotification? notification = message.notification;
+    AndroidNotification? android = message.notification?.android;
+
+    // Mostrar la notificación si existe
+    if (notification != null && android != null) {
+      flutterLocalNotificationsPlugin.show(
+        notification.hashCode,
+        notification.title,
+        notification.body,
+        NotificationDetails(
+          android: AndroidNotificationDetails(
+            channel.id, // Usar el ID del canal configurado
+            channel.name,
+            channelDescription: channel.description,
+            importance: Importance.high,
+            priority: Priority.high,
+            playSound: true, // Habilita el sonido por defecto
+          ),
+        ),
+      );
+    }
+  });
   runApp(const MyApp());
 }
 

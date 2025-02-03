@@ -50,9 +50,13 @@ dependencies:
   geolocator: ^9.0.2
   face_recognition: ^0.0.1
   firebase_core: ^3.7.0
+  #firebase_core: ^latest_version
   google_ml_kit: ^0.7.0
   http: ^0.13.6
-  #firebase_messaging: ^15.1.5
+  #firebase_messaging: ^15.2.1
+  firebase_messaging: ^15.1.5
+  flutter_local_notifications: ^18.0.1
+  #firebase_messaging: ^latest_version
 
 dev_dependencies:
   flutter_test:

@@ -59,13 +59,13 @@ class EventsProvider extends GetConnect {
   }
 
   // Nueva función para registrar la visualización del evento
-  Future<void> registerEventView(int eventId, String userClass) async {
+  Future<void> registerEventView(int eventId) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? token = prefs.getString('token');
     //int? userId = prefs.getInt('user_id');
     int? userId = int.tryParse(prefs.getString('user_id') ?? '');
     String? userName = prefs.getString('user_name');
-    //String? userClass = prefs.getString('model_name');
+    String? userClass = prefs.getString('model_name');
 
     print("Intentando registrar visualización del evento $eventId");
     print("token: $token");

@@ -69,6 +69,12 @@ flutter {
 }
 
 dependencies {
+    // Importa la plataforma BoM de Firebase
+    implementation platform('com.google.firebase:firebase-bom:31.1.0')
+
+    // Añade las dependencias de Firebase que necesites sin especificar la versión
+    implementation 'com.google.firebase:firebase-messaging'
+    implementation 'com.google.firebase:firebase-functions'
     implementation 'androidx.multidex:multidex:2.0.1'
 
 }

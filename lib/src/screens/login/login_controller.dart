@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:movil_agenda_sw1_p2/src/providers/users_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:firebase_messaging/firebase_messaging.dart'; // Importa FirebaseMessaging
+import 'package:movil_agenda_sw1_p2/src/helpers/auth_helper.dart'; // Importa AuthHelper
 
 class LoginController extends GetxController {
   TextEditingController emailController = TextEditingController();
@@ -47,6 +49,13 @@ class LoginController extends GetxController {
           await prefs.setString('user_photo', responseBody['user_photo'] ?? '');
           await prefs.setString('qr_code', responseBody['qr_code'] ?? '');
           print('LOGIN DETALLES response: ${response.body}');
+
+          // Obtén el token FCM y regístralo en Odoo
+          String? fcmToken = await FirebaseMessaging.instance.getToken();
+          if (fcmToken != null) {
+            print("Registrando FCM Token: $fcmToken");
+            await AuthHelper.registerFcmToken(fcmToken);
+          }
 
           Get.toNamed('/home');
         }

@@ -15,7 +15,9 @@ class AvisoDetalleScreen extends StatefulWidget {
 
   AvisoDetalleScreen({Key? key})
       : avisoId = Get.arguments['avisoId'],
-        super(key: key);
+        super(key: key) {
+          print("Recibido avisoId en AvisoDetalleScreen: $avisoId");
+        }
 
   @override
   State<AvisoDetalleScreen> createState() => _AvisoDetalleScreenState();
@@ -48,6 +50,8 @@ class _AvisoDetalleScreenState extends State<AvisoDetalleScreen> {
     final avisoDetalle = await avisosProvider.getAvisoDetalle(widget.avisoId);
 
     print("Datos del aviso recibidos: $avisoDetalle");
+    //Future.microtask(() => eventsProvider.registerEventView(eventId));
+    Future.microtask(() => avisosProvider.registerAvisoView(widget.avisoId, "agenda.apoderado"));
 
     return avisoDetalle;
   }
